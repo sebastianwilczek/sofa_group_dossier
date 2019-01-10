@@ -7,12 +7,88 @@ TODO Sebastian
 \subsection{Poll Wizard}
 \label{ssec:poll_wizard}
 
-TODO Sebastian
+The Poll Wizard is mostly defined by the \textit{WizardProcess} component. A simplified version of this component can be seen in Listing \ref{lst:wizardComponentWithRecompose}. All source code that does not relate to the staging functionality of the Wizard was removed from the code below.
+
+\begin{lstlisting}[language=javascript,caption=Simplified Wizard Component using \textit{recompose},label=lst:wizardComponentWithRecompose]
+const WizardProcess = ({stage, incrementStage, decrementStage}) => {
+  return (
+    <View>
+      {stage == 0 && <WizardStageTitle />}
+      {stage == 1 && <WizardStageTeam />}
+      {stage == 2 && <WizardStageGuests />}
+      {stage == 3 && <WizardStageExercises />}
+      {stage == 4 && <WizardStageDueDate />}
+      {stage == 5 && <WizardStageCheck />}
+
+      <View>
+        {stage != 0 && (
+          <TouchableOpacity onPress={decrementStage}>
+            <Icon name='arrow-circle-left' size={60} />
+          </TouchableOpacity>
+        )}
+        {(stage >= 0 && stage <= 4) &&
+          <TouchableOpacity onPress={incrementStage}>
+            <Icon name='arrow-circle-right' size={60} />
+          </TouchableOpacity>
+        }
+        {stage == 5 && (
+          <TouchableOpacity onPress={buildVote4FunObject}>
+            <Icon name='check-circle' size={60} />
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  )
+}
+export default compose(
+  withState('stage', 'setStage', 0),
+  withHandlers({
+    incrementStage: props => () => {props.setStage(props.stage + 1)},
+    decrementStage: props => () => {props.setStage(props.stage - 1)},
+  mapProps(props => ({
+    stage: props.stage,
+    incrementStage: props.incrementStage,
+    decrementStage: props.decrementStage,
+  }))
+)(WizardProcess)
+\end{lstlisting}
+
+The component is actually divided into two components, making use of \textit{recompose}. For further information about \textit{recompose}, see \textit{\ref{ssec:recompose} \nameref{ssec:recompose}}. The first part is a functional component, which takes a numerical value for \textit{stage} as well as functions to change this value as parameters. Depending on the value of \textit{stage}, different components are rendered, as described in \textit{\ref{ssec:component_structure} \nameref{ssec:component_structure}}. The component furthermore renders buttons depending on certain \textit{stage} values, to advance through the stages of the Setup Wizard. The complete component also implements certain checks at this point, for example by only showing the advancing button when a title has been entered in the \textit{WizardStageTitle} component.
+\newline
+The second part of the component defines the business logic of the component. It uses \textit{recompose} to provide state, in this example to the property \textit{stage}. The full component defines the entire state of all mutable values here, including the handlers to change them. These handlers are used as callback methods by the \textit{WizardStage} components to store entered values. All values and functions created this way are also mapped as properties, so that they can be used by the functional rendering component.
+\newline
+Since the component strictly separates rendering and logic, the component can easily be expanded. More stages could potentially be added or removed. Given the right handlers, stages could also be skipped or jumped to.
 
 \subsubsection{Poll Title}
 \label{sssec:poll_title}
 
-TODO Sebastian
+The \textit{WizardStageTitle} component, as it is seen in Listing \ref{lst:pollTitleComponent}, is a fairly simple one. It shows a text input field for the user to put in the name of the poll. Just like \textit{WizardProcess}, it is a functional component, albeit without \textit{recompose}.
+
+\begin{lstlisting}[language=javascript,caption=Simplified Poll Title Component,label=lst:pollTitleComponent]
+const WizardStageTitle = (props) => {
+  if (props.title.length == 0) {
+    props.updateTitle("Poll: " + props.trainingTitle)
+  }
+  return (
+    <View style={props.styles.stageContainer}>
+      <Text style={props.styles.header}>
+        {I18n.t('SOFA_wizard_header_title')}
+      </Text>
+      <FormTextInput
+        value={props.title}
+        label=''
+        maxLength={50}
+        placeholder={`${I18n.t('SOFA_wizard_title_placeholder')}`}
+        onChangeText={props.updateTitle} />
+    </View>
+  );
+};
+export default WizardStageTitle;
+\end{lstlisting}
+
+If the component is initialised the first time, still having an empty string as a value for \textit{title}, which is given to the component as a property, the component gives it a default value, consisting of the value "Poll: " and the original training title, which is also a property. In \textit{\ref{ssec:component_structure} \nameref{ssec:component_structure}} you can see that the training title is in turn provided as a property to the \textit{WizardProcess} component.
+\newline
+Other than that, the component makes use of the \textit{FormTextInput}, which is a custom styled text entry field component. The callback function is referenced in the "onChangeText" property. Furthermore, the component is referencing the \textit{I18n} component, which can load specified strings for different languages, making it easy to translate the application into different languages and changing them as needed. The style of the components is also loaded as property, since \textit{WizardProcess} defines most styles to keep the style consistent throughout all \textit{WizardStage} components.
 
 \subsubsection{Team Selection}
 \label{sssec:poll_team}

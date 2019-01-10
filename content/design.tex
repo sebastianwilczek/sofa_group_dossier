@@ -94,4 +94,26 @@ TODO Marco
 \subsection{Component Structure}
 \label{ssec:component_structure}
 
-TODO Sebastian
+Given the component-based structure of the \textit{React Native} framework, some new components had to be designed to implement the necessary functionality of the \textit{Vote4Fun} extension. This section details how the Setup Wizard, which is the main part of the extension, was designed, specifically how it's components are placed in relation to each other and to the existing \textit{Connected.Football} application.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{images/diagrams/component_diagrams/ComponentDiagram_Wizard.png}
+        \caption{Component Diagram Poll Setup Wizard}
+        \label{fig:component_diagram_wizard}
+    \end{center}
+\end{figure}
+
+Figure \ref{fig:component_diagram_wizard} shows a component diagram containing all the major components involved in the poll Setup Wizard. The Wizard itself is being used by the \textit{Connected.Football Training Planner}. This was done as a poll is intrinsically linked to a training program and is dependent on one.
+\newline
+The Wizard itself has an overarching component called \textit{WizardStart}. This is a component that is shown as part of the training planner, displaying either a simple start button to start the setup or an overview in form of the component \textit{PollOverview}, if a \textit{vote4Fun} object is supplied by the training planner. In any case, the component is also supplied with the state of \textit{trainingTitle}, \textit{trainingDate} and \textit{selectedExercises}, as well as a reference to the \textit{navigation} component, since the \textit{WizardProcess} component is called as a new element on the navigation stack of the application.
+\newline
+The \textit{WizardProcess} is divided into two parts, namely \textit{WizardProcess Logic} and \textit{WizardProcess Rendering}. These are actually parts of the same file, which is a functional component making use of \textit{recompose}. For further information about functional components, see \textit{\ref{ssec:recompose} \nameref{ssec:recompose}}.
+\newline
+\textit{WizardProcess Logic} handles the business logic and supplies \textit{WizardProcess Rendering} with a state for \textit{stage}, \textit{title}, \textit{dueDate}, \textit{team}, \textit{emailArray} and \textit{pollExercises}. Depending on the value of \textit{stage}, \textit{WizardProcess Rendering} than renders one of the components \textit{WizardStageTitle}, \textit{WizardStageTeam}, \textit{WizardStageGuests}, \textit{WizardStageExercises}, \textit{WizardStageDueDate} and \textit{WizardStageCheck}, in that order.
+\newline
+Each of the \textit{WizardStage} components is responsible for taking a user's input and sending it to the \textit{WizardProcess Logic} component using a callback function. The \textit{WizardProcess Logic} checks if the user input is valid, which includes the usage of the properties supplied to it by the \textit{WizardStart} component, and sets the state to the user input if it is deemed valid.
+\newline
+Finally, the \textit{WizardStageCheck} component received all the entered values as properties to render them one last time for the user to check their input. Afterwards, the component triggers a call to the \textit{Connected.Football} backend server, sending a \textit{GraphQL} mutation, which creates a new \textit{Vote4Fun} object on the backend and takes other necessary actions, such as notifying users.
+\newline
+Aside from the components mentioned above, most components make use of simpler components, such as text entry fields or buttons. These are already supplied by \textit{React Native} or other packages that were loaded. Some custom components were defined over the course of this project, however, they only defined simple logic and rendering and are therefore not mentioned in detail here.
