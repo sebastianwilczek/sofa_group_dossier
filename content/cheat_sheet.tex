@@ -1,0 +1,94 @@
+\section{Cheat Sheet}
+\label{sec:cheat_sheet}
+\lhead{\thesection \space Cheat Sheet}
+
+\subsection{Paragraphs}
+\label{ssec:paragraphs}
+
+You can divide paragraphs with new lines.
+\newline
+This way you can write multiple paragraphs.
+
+\subsection{Text Formatting}
+\label{ssec:formatting}
+
+Text can be \textit{italic} or \textbf{bold}.
+
+\subsection{Lists}
+\label{ssec:lists}
+
+\subsubsection{Enumerated Lists}
+\label{sssec:enum_lists}
+
+\begin{enumerate}
+    \item A list
+    \item with numbers
+    \begin{enumerate}
+        \item and subcharacters
+    \end{enumerate}
+\end{enumerate}
+
+\subsubsection{Itemised Lists}
+\label{sssec:item_lists}
+
+\begin{itemize}
+    \item A list
+    \item with items
+    \begin{itemize}
+        \item and subitems
+    \end{itemize}
+\end{itemize}
+
+\subsection{Figures}
+\label{ssec:figures}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{images/figure.jpg}
+        \caption{An included figure}
+        \label{fig:figure}
+    \end{center}
+\end{figure}
+
+\subsection{Tables}
+\label{ssec:tables}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+            Title   & Title   & Title   \\ \hline
+            Content & Content & Content \\ \hline
+            Content & Content & Content \\ \hline
+    \end{tabular}
+    \caption{Some Table}
+    \label{tab:some_table}
+\end{table}
+
+\subsection{References}
+\label{ssec:references}
+
+You can reference a chapter by number and name: \ref{sssec:item_lists} \nameref{sssec:item_lists}.
+\newline
+You can also do this for figures, tables, appendices and listings: \ref{fig:figure} \nameref{fig:figure}.
+
+\subsection{Citation}
+\label{ssec:citation}
+
+You can cite any defined source from the file \textit{"bibliography.bib"} (\cite{google}).
+\newline
+".. some [...] citation [sic]." (\cite{some-master}).
+\newline
+Citations can be appended with further details. (\cite[p. 169]{my-book})
+
+\subsection{Listings}
+\label{ssec:listings}
+
+\begin{lstlisting}[language=javascript,caption=Some JavaScript Code,label=lst:code]
+describe("Hello", function() {
+  //A comment
+  someFunction("I run JavaScript", async function() {
+    return true;
+  });
+});
+\end{lstlisting}
