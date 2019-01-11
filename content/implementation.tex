@@ -108,7 +108,51 @@ TODO Marco
 \subsubsection{Due Date Settings}
 \label{sssec:poll_due_date}
 
-TODO Sebastian
+The component that takes user input regarding the due date of a poll, which is called \textit{WizardStageDueDate}, as seen in Listing \ref{lst:pollDueDateComponent}, is very similar to the component mentioned in \textit{\ref{sssec:poll_title} \nameref{sssec:poll_title}}. It is again a simple functional component which receives relevant values as properties to render the user input field.
+
+\begin{lstlisting}[language=javascript,caption=Simplified Poll Due Date Component,label=lst:pollDueDateComponent]
+const WizardStageDueDate = (props) => {
+  return (
+    <View style={props.styles.stageContainer}>
+      <Text style={props.styles.header}>
+        {I18n.t('SOFA_wizard_header_due_date')}
+      </Text>
+      <DateTimePicker
+        label="SOFA_wizard_due_date"
+        trainingDate={props.dueDate}
+        setTrainingDate={props.updateDueDate}
+      />
+      <View style={styles.hintContainer}>
+        <Text style={styles.hintText}>
+          {I18n.t('SOFA_wizard_due_date_hint')}
+        </Text>
+      </View>
+    </View>
+  );
+};
+export default WizardStageDueDate;
+\end{lstlisting}
+
+The component makes use of another component called \textit{DateTimePicker}, which is a custom component that opens a dialog which is native to the mobile OS the application was deployed to, which lets the user pick a date and time. Once a user has chosen a time, the component calls the supplied callback function, in this case "updateDueDate".
+\newline
+Given the nature of a poll, this due date of course has to be before the date of the actual training. Such a check is absent in the component mentioned above. The actual check is done by the \textit{WizardProcess} component, which handles most of the logic.
+
+\begin{lstlisting}[language=javascript,caption=Increment Stage Check,label=lst:incrementStageCheck]
+{((stage == 0 && title != '') ||
+   stage == 1 ||
+   stage == 2 ||
+   stage == 3 ||
+   ((stage == 4) && (dueDate > new Date().addDays(1)) && (dueDate.addHours(2) < trainingDate))
+) &&
+  <TouchableOpacity onPress={incrementStage}>
+    <Icon name='arrow-circle-right' size={60} />
+  </TouchableOpacity>
+}
+\end{lstlisting}
+
+The source code listed in Listing \ref{lst:incrementStageCheck} shows the check as to whether to show the button which advances the Setup Wizard to it's next stage. The button is only rendered when certain conditions are met, for instance, in stage 0, which makes use of the component \textit{WizardStageTitle}, the title itself must not be empty. In the same way, the entered due date must be at least one day in the future, so that users have time to vote, and at least two hours before the start of the training.
+\newline
+As far as state is concerned, the component acts the same way as \textit{WizardStageTitle}. Once the callback function is called, the state is stored into the variable "dueDate" and is available to be used in the entire Setup Wizard components and it's sub-components.
 
 \subsubsection{Check of Settings}
 \label{sssec:poll_check}
