@@ -100,7 +100,7 @@ TODO Patrick
 \label{sssec:poll_guests}
 The \textit{WizardStageGuests} component allows the user to invite guests via email to participate in the voting for the exercise for a specific training. One condition for this is that the email that is invite to the poll is already registered in the \textit{Connected.Football} environment. 
 \newline
-In Listing \ref{lst:pollGuestsComponent} 
+The structure of the component in Listing \ref{lst:pollGuestsComponent} is fairly simple. It has a text input where the user can enter an email and a button that will then check this email and when the check returns true, it will add the email to a \textit{FlatList}. 
 \begin{lstlisting}[language=javascript, caption=Simplified Guest Component, label=lst:pollGuestsComponent]
 return (
     <ApolloConsumer>
@@ -139,6 +139,25 @@ return (
       }}
     </ApolloConsumer>
   )
+}
+\end{lstlisting}
+In Listing \ref{lst:pollGuestsCheck} the methods that check the email on the offline part (no connection to the \textit{Connected.Football} environment) are shown. The method \textit{validateEmail} gets an email as a parameter and then checks the email if the email has the standard email format. The second method checks if the email is already in the \textit{emailArray}. This way the \textit{FlatList} can't have the same email twice.
+\begin{lstlisting}[language=javascript, caption=Check E-Mail Methods, label=lst:pollGuestsCheck]
+const validateEmail = email => {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}
+    \.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(email)
+}
+
+const isDoubleEmail = (value, array) => {
+  const bufArray = array
+  let doubleEmail = false
+  bufArray.find(item => {
+    if (item.email === value) {
+      doubleEmail = true
+    }
+  })
+  return doubleEmail
 }
 \end{lstlisting}
 
@@ -330,10 +349,50 @@ The mutation itself is defined in the lines 8-15. The mutation references "SaveP
 \newline
 Finally, the handler method "saveProgram" takes this reducer and sends it to the backend. The reducer is taken as a payload for the mutation. The mutation returns the ID of the created training program, which can be used for other functionality, such as editing the training program. Since the "vote4fun" object is part of said program, it is of course also possible to edit the poll itself.
 
-\subsection{Recompose \& Functional Components}
+\subsection{\textit{recompose} \& Functional Components}
 \label{ssec:recompose}
 
-TODO Sebastian
+\textit{recompose} is a \textit{Node.js} package which is available at \url{https://www.npmjs.com/package/recompose}. It was made heavily use of during the project because of the possibility to completely divide logic and rendering inside the same component. All major components described in \textit{\ref{ssec:component_structure} \nameref{ssec:component_structure}} are functional components. An example of a functional component can be seen in Listing \ref{lst:functionalComponent}.
+
+\begin{lstlisting}[language=javascript,caption=Functional Component Example,label=lst:functionalComponent]
+const Component = prop => (
+  <View>
+    <ChildComponent />
+  </View>
+);
+\end{lstlisting}
+
+Depending on individual preference, the strict functional arrow representation may also be extended with the "return" keyword for easier readability. The one thing to notice about such a functional component is that it does not implement any form of state or state management. What makes a functional component functional is that it is supplied with some form of state, such as properties or other state-forming values, and that it returns something that is dependent on that state, in this case a \textit{React Native} rendering definition. Given that the functional component is not dependent on how the state is managed, it can be reused in any way necessary. Two or more implementations of state and state management can make use of the same functional component without ever needing to change the component itself. The only restriction is that if the same state is supplied to the component, the result is always the same, since it does not make use or references any other form of state. For this reason, functional components are also known as stateless components.
+\newline
+To implement any business logic, \textit{recompose} comes into play. A simple example of the usage of \textit{recompose} can be seen in Listing \ref{lst:wizardComponentWithRecompose} in \textit{\ref{ssec:poll_wizard} \nameref{ssec:poll_wizard}}. The component defined there contains a functional component called \textit{WizardProcess} which is supplied with the properties \textit{stage}, \textit{incrementStage} and \textit{decrementStage}, which make up the state and the state management. Assuming that these properties do not change, the returned \textit{React Native} rendering always acts the exact same way.
+\newline
+Table \ref{tab:recomposeFunctions} shows the basic functionality and keywords of \textit{recompose}. The following description explains how to use the mentioned keywords and how they were implemented in the project.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \rowcolor[HTML]{C0C0C0} 
+        \textbf{Name}              & \textbf{Usage}                                                                                                                  \\ \hline
+        \textit{withState}         & Manages a single state value, providing a function to update the value and accepting an optional default value.                 \\ \hline
+        \textit{withHandlers}      & Creates handler methods, which are functions that do things in response to events being triggered, accepting component's props. \\ \hline
+        \textit{mapProps}          & Replaces the current props with properties given inside the function.                                                           \\ \hline
+        \textit{withProps}         & Merges the current props with properties given inside the function.                                                             \\ \hline
+        \textit{onlyUpdateForKeys} & Limits the re-rendering of the component to changes in state defined inside the function.                                       \\ \hline
+    \end{tabularx}
+    \caption{\textit{recompose} Functions}
+    \label{tab:recomposeFunctions}
+\end{table}
+
+The actual definition of these properties is handled by using \textit{recompose}. Making use of the "compose" command, various state and logic definitions can be supplied to the functional component, which is references in brackets at the very end. Using the "withState" keyword, the state, which is as aforementioned absent from the functional component, can be defined. Each state has a name, a name for a method which can overwrite the value of the state and default value. In the example that is "stage", "setStage" and 0, respectively. This state is initialised whenever the component using \textit{recompose} is used in another component.
+\newline
+Stage management and business logic can be applied to a functional component with the "withHandlers" keyword. The keyword allows the definition of multiple methods which can alter the state defined above. Take note that these methods are also functions, taking the entire state that is also applied to the functional component as function values, called "props". The function defined this way can make use of the methods defined with the "withState" keyword to alter the state of the defined values. In the example, the functions make use of the "setStage" method, incrementing or decrementing them by calling the state of "stage" and applying the new state using the aforementioned method.
+\newline
+The state and function defined previously can be mapped to be used as properties by the functional component and by the other function defined using \textit{recompose}. The "mapProps" keyword can be used for that. Since the component might also receive properties from a higher level component, these can be used here as well, using the "withProps" keyword. This way, it is also possible to prevent name collisions, when a property that is used internally has the same name as a property that is handed down by a parent component.
+\newline
+The great thing about defining handler methods this way is that they can be used as properties the same way as the state itself. This way, it is possible to hand down the logic defined in this component to child components, which can use the references to the handler methods as callback functions. This principle was applied to the \textit{WizardStage} components in this project. This way, the aforementioned components could be entirely functional. All they needed to implement was how the component was supposed to be rendered given the properties it receives and what part of the rendering would need to call the handler methods. It could also be limited which properties were given to certain components. Making use of that, components would only need to render or re-render whenever the properties that are relevant to them change.
+\newline
+Considering limiting re-rendering, \textit{recompose} can also be of use that way. The "onlyUpdateForKeys" keyword allows it to define the names of certain state values. When a state value changes that is not part of this set, the rendering will not take place for the component. For example, this can be very useful when the changed state is only needed for internal computation and is not visible to the user. This significantly reduces overhead by stopping unnecessary re-rendering.
 
 \subsection{GraphQL}
 \label{ssec:graphql}
