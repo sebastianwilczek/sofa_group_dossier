@@ -2,7 +2,13 @@
 \label{sec:implementation}
 \lhead{\thesection \space Implementation}
 
-TODO Sebastian
+This chapter details how the \textit{Vote4Fun} extension was implemented over the course of the project, based on the design described in \textit{\ref{sec:desgin} \nameref{sec:desgin}}. To do so, the implementation of the Setup Wizard is explained first. Given the component-based structure of \textit{React Native}, each component that makes up the Setup Wizard is explained, as they are defined in Figure \ref{fig:component_diagram_wizard} in \textit{\ref{ssec:component_structure} \nameref{ssec:component_structure}}. Each component section contains a simplified version of it's source code to highlight important points about their implementation. The entire structure of the Wizard is described too, as well as how each child component interacts with it using callback functions.
+\newline
+The description of the individual components is followed by a definition of functional components, as well as how they were used during the project in combination with \textit{recompose}. It is detailed how to write functional components and why it is a good idea to use them. This section also includes an overview and description of the functionality of \textit{recompose} that was used in the extension.
+\newline
+What follows is a description of how \textit{GraphQL} was used during the project. It briefly details what \textit{GraphQL} is and what makes it great to use. This is followed by an explanation of how it was implemented in the application and where it was used as part of the extension.
+\newline
+The chapter closes with a section about the problems occurring during development. The problems described deal with the way \textit{React Native} applications can be debugged and why that way is less efficient than it could be as well as problems occurring because of \textit{Node.js} packages being used, including a way to fix most problems related to this issue. It is also detailed how configuration errors took place during the implementation, specifically how the application failed to be deployed to an \textit{iOS} device.
 
 \subsection{Poll Wizard}
 \label{ssec:poll_wizard}
@@ -91,13 +97,13 @@ If the component is initialised the first time, still having an empty string as 
 Other than that, the component makes use of the \textit{FormTextInput}, which is a custom styled text entry field component. The callback function is referenced in the "onChangeText" property. Furthermore, the component is referencing the \textit{I18n} component, which can load specified strings for different languages, making it easy to translate the application into different languages and changing them as needed. The style of the components is also loaded as property, since \textit{WizardProcess} defines most styles to keep the style consistent throughout all \textit{WizardStage} components.
 
 \subsubsection{Team Selection}
-
 \label{sssec:poll_team}
 
 TODO Patrick
 
 \subsubsection{Addition of Guests}
 \label{sssec:poll_guests}
+
 The \textit{WizardStageGuests} component allows the user to invite guests via email to participate in the voting for the exercise for a specific training. One condition for this is that the email that is invite to the poll is already registered in the \textit{Connected.Football} environment. 
 \newline
 The structure of the component in Listing \ref{lst:pollGuestsComponent} is fairly simple. It has a text input where the user can enter an email and a button that will then check this email and when the check returns true, it will add the email to a \textit{FlatList}. 
@@ -141,14 +147,15 @@ return (
   )
 }
 \end{lstlisting}
+
 In Listing \ref{lst:pollGuestsCheck} the methods that check the email on the offline part (no connection to the \textit{Connected.Football} environment) are shown. The method \textit{validateEmail} gets an email as a parameter and then checks the email if the email has the standard email format. The second method checks if the email is already in the \textit{emailArray}. This way the \textit{FlatList} can't have the same email twice.
+
 \begin{lstlisting}[language=javascript, caption=Check E-Mail Methods, label=lst:pollGuestsCheck]
 const validateEmail = email => {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}
     \.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(email)
 }
-
 const isDoubleEmail = (value, array) => {
   const bufArray = array
   let doubleEmail = false
@@ -412,7 +419,11 @@ TODO Patrick
 \subsubsection{Package Management}
 \label{sssec:package_management}
 
-TODO Lucas
+During this project there were several problems that put the project on hold. One of these problems was that the package manager for \textit{React Native}, \textit{npm} would install minor package updates. These minor package updates then would lead to several error messages and crashes of the \textit{Connected.Football} application. The problem about those errors and crashes were that the logging information about those weren't that great. These errors and crashes resulted that the project came to a full stop several times and all the project members tried to solve the error or crash of the application. 
+\newline
+Sometimes these errors and crashes would solve themselves after a while, probably because another minor update on another dependency was made, which then solved the current crash or error. 
+\newline
+Very late in the project this problem then would be solved. The problem was that in the \textit{package.json} of the \textit{Connected.Football} application several dependencies were allowed to update for minor updates. In \textit{npm} this was done by using the " \^\ " symbol in front of the version number of the dependencies. After removing all " \^\ " this error never reoccurred during this project. 
 
 \subsubsection{Configuration Problems}
 \label{sssec:configuration_problems}
