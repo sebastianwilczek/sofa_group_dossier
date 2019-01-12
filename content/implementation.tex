@@ -91,14 +91,56 @@ If the component is initialised the first time, still having an empty string as 
 Other than that, the component makes use of the \textit{FormTextInput}, which is a custom styled text entry field component. The callback function is referenced in the "onChangeText" property. Furthermore, the component is referencing the \textit{I18n} component, which can load specified strings for different languages, making it easy to translate the application into different languages and changing them as needed. The style of the components is also loaded as property, since \textit{WizardProcess} defines most styles to keep the style consistent throughout all \textit{WizardStage} components.
 
 \subsubsection{Team Selection}
+
 \label{sssec:poll_team}
 
 TODO Patrick
 
 \subsubsection{Addition of Guests}
 \label{sssec:poll_guests}
-
-TODO Lucas
+The \textit{WizardStageGuests} component allows the user to invite guests via email to participate in the voting for the exercise for a specific training. One condition for this is that the email that is invite to the poll is already registered in the \textit{Connected.Football} environment. 
+\newline
+In Listing \ref{lst:pollGuestsComponent} 
+\begin{lstlisting}[language=javascript, caption=Simplified Guest Component, label=lst:pollGuestsComponent]
+return (
+    <ApolloConsumer>
+      {client => ...
+        }
+        return (
+          <View>
+            <View style={props.styles.stageContainer}>
+              <Text style={props.styles.header}>
+                {I18n.t('SOFA_wizard_header_guests')}
+              </Text>
+              <FormTextInput
+                value={props.email}
+                label={`${I18n.t('SOFA_wizard_guests_email')}`}
+                maxLength={50}
+                type='email-address'
+                placeholder={`${I18n.t('SOFA_wizard_guests_enter_email')}`}
+                onChangeText={props.updateEmail}
+              />
+              <Button
+                title={`${I18n.t('SOFA_wizard_guests_add_button')}`}
+                color='green'
+                onPress={onPress}
+              />
+            </View>
+            <FlatList
+              data={props.emailArray}
+              extraData={props.updateView}
+              renderItem={({ item }) => (
+              ...
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
+        )
+      }}
+    </ApolloConsumer>
+  )
+}
+\end{lstlisting}
 
 \subsubsection{Choice of Exercises}
 \label{sssec:poll_exercises}
@@ -157,7 +199,136 @@ As far as state is concerned, the component acts the same way as \textit{WizardS
 \subsubsection{Check of Settings}
 \label{sssec:poll_check}
 
-TODO Marco, TODO Sebastian
+TODO Marco Check and proof-read section, add information as you see fit 
+
+Listing \ref{lst:pollCheckComponent} shows a simplified version of the \textit{WizardStageCheck} component. Again a functional component, the component seems to include quite a lot, yet it is actually only responsible for showing the already entered values to the user. The amount of source code simply comes from the amount of information that needs to be displayed, which includes information from all previous \textit{WizardStage} components.
+
+\begin{lstlisting}[language=javascript,caption=Simplified Poll Check Component,label=lst:pollCheckComponent]
+const WizardStageCheck = (props) => {
+  return (
+    <View>
+      <Text>{I18n.t('SOFA_wizard_header_check')}</Text>
+      <View>
+        <FormLabel>{I18n.t('SOFA_wizard_title')}</FormLabel>
+        <View>
+          <Text>{props.title}</Text>
+        </View>
+        {props.emailArray.length > 0 &&
+          <View>
+            <FormLabel>{I18n.t('SOFA_wizard_guests')}</FormLabel>
+            <View>
+              <FlatList
+                data={props.emailArray}
+                renderItem={({ item }) => (
+                  <View>
+                    <Text>{item.email}</Text>
+                  </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}/>
+            </View>
+          </View>
+        }
+        <FormLabel>{I18n.t('SOFA_wizard_exercises')}</FormLabel>
+        <View>
+          <Text>{props.pollExercises}</Text>
+        </View>
+        <FormLabel>{I18n.t('SOFA_wizard_due_date')}</FormLabel>
+        <View>
+          <Icon name="date-range" size={40} />
+          <Text>{moment(props.dueDate).format('DD-MM-YYYY H:mm')}</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+export default WizardStageCheck;
+\end{lstlisting}
+
+The component itself does not actually trigger any callback method, as the interaction for sending the checked information is actually part of the stage buttons displayed by the \textit{WizardProcess} component. Listing \ref{lst:wizardComponentWithRecompose} in \textit{\ref{ssec:poll_wizard} \nameref{ssec:poll_wizard}} contains the button which calls the handler method "buildVote4FunObject", which is responsible for sending the entered information to the \textit{Connected.Football} backend. This handler method can be seen in Listing \ref{lst:buildVote4FunObject}.
+
+\begin{lstlisting}[language=javascript,caption=\textit{buildVote4FunObject} Handler Method,label=lst:buildVote4FunObject]
+[...]
+export default compose(
+  //[...]
+  withHandlers({
+    buildVote4FunObject: props => () => {
+      const exercises = [];
+      props.pollExercises.forEach(function (entry) {
+        exercises.push({ "exerciseId": entry.id, "playerIds": [] });
+      })
+      const v4l = {
+        "type": "clubteam",
+        "title": props.title,
+        "deadline": props.dueDate,
+        "showIntermediaResults": false,
+        "showFinalResults": false,
+        "notificationHoursBeforeDeadline": 1,
+        "notificationAfterPercentageVoted": 50,
+        "guestIDs": emailArray,
+        "exercises": exercises
+      }
+      props.action({ type: 'setVote4Fun', text:v4l });
+      props.navigator.pop();
+    },
+  }),
+  //[...]
+)(WizardProcess)
+\end{lstlisting}
+
+This method builds a JSON object that consists of all the information entered by the user as well as some default values that can be changed by the owner of the poll later, such as whether to show intermediate results or when to send notifications to users. One thing to pay attention to is how the "exercises" array is constructed. The array does not only consist of the IDs of exercises, like the "pollExercises" array that was constructed by the \textit{WizardStageExercises} component (see \textit{\ref{sssec:poll_exercises} \nameref{sssec:poll_exercises}}), but of objects containing both one the mentioned IDs as well as an empty array called "playerIds". This empty array is later filled with the ID of an user, whenever this user votes for this specific exercise in the poll. This way it can be tracked who already voted and which exercises got how many views.
+\newline
+The constructed JSON object is then propagated to the "action" property. This property is handed down from the component creating the training planner, which includes the storing of said object as well as the \textit{GraphQL} mutation to store the poll together with the entire training plan. A simplified version of this functionality can be seen in Listing \ref{lst:trainingPlannerGraphQL}.
+
+\begin{lstlisting}[language=javascript,caption=Simplified Training Planner Component with \textit{GraphQL} Mutation,label=lst:trainingPlannerGraphQL]
+const actions = {
+  //[...]
+  setVote4Fun: (s, action) => Object.assign({}, s, {
+    vote4fun: action.text,
+  }),
+};
+//[...]
+const SAVE_PROGRAM_MUTATION = gql`
+  mutation SaveProgram($payload: JSON!) {
+    saveProgram(payload: $payload) {
+        data
+        ...ProgramListItem
+      }
+  }
+  ${PROGRAM_LIST_FRAGMENT}
+`;
+//[...]
+export default compose(
+  //[...]
+  graphql(SAVE_PROGRAM_MUTATION),
+  withReducer('programState', 'action', reducer, ({ program }) => {
+    return {
+      id: program.id,
+      //[...]
+      vote4fun: program.vote4fun || [],
+    };
+  }),
+  withHandlers({
+    saveProgram: props => () => {
+      props.mutate({
+        variables: {
+          payload: transformReducerToPayload(props.programState),
+        },
+        update: (store, { data: { saveProgram } }) => {
+          const data = store.readQuery({ query: PROGRAMS_QUERY });
+          data.getPrograms.unshift(saveProgram);
+          store.writeQuery({ query: PROGRAMS_QUERY, data });
+        },
+      });;
+    },
+  ),
+)(TabView);
+\end{lstlisting}
+
+The "action" that is given to the Setup Wizard is defined at the very beginning. This callback simply receives the input of the callback call and stores the text that comes with it in a variable "vote4fun". The rest shows how all entered values of a training, including the values entered in the Setup Wizard, are merged into a "reducer" which is in turn sent as a \textit{GraphQL} mutation.
+\newline
+The mutation itself is defined in the lines 8-15. The mutation references "SaveProgram", which is a mutation endpoint provided by the \textit{Connected.Football} backend. The sent object itself is defined with \textit{recompose}'s "withReducer", which returns all values of a training program, including the "vote4fun" value, as a JSON object. Note that if the value "vote4fun" is null, an empty array is sent instead, since a training planner does not necessarily require a poll to be created.
+\newline
+Finally, the handler method "saveProgram" takes this reducer and sends it to the backend. The reducer is taken as a payload for the mutation. The mutation returns the ID of the created training program, which can be used for other functionality, such as editing the training program. Since the "vote4fun" object is part of said program, it is of course also possible to edit the poll itself.
 
 \subsection{Recompose \& Functional Components}
 \label{ssec:recompose}

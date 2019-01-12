@@ -1,8 +1,7 @@
 \section{Design}
 \label{sec:desgin}
 \lhead{\thesection \space Design}
-
-TODO Lucas
+This chapter deals with the design artefacts that were created during this project. First the functionality of the \textit{Connected.Football} application will be explained using a State Machine Diagram and an Activity Diagram. The second chapter deals with the visual design of the application. After that a brief definition of the \textit{Vote4Fun} object is given. Finally the design of the components that were designed during this projects are explained. 
 
 \subsection{Functionality}
 \label{ssec:functionality}
@@ -28,7 +27,9 @@ In both cases, the poll has a set of users. Once the owner enters information re
     \end{center}
 \end{figure}
 
-TODO Lucas Describe Activity Diagram Create Exercise Poll
+Figure 8 shows the activity diagram that describes the process of creating a new exercise poll. 
+\newline
+The process starts when the actor selects "\textit{Create New Exercise Poll}" while creating or editing a training. After that the application will guide the actor through the process of creating a new poll. First the actor enters a title for the poll. Then the system lists all available exercises from the \textit{Connected.Football} environment and the actor can select up to 4 but at least 2 exercises that the player later on can vote for. After selecting the exercises the actor is prompted to enter a deadline for the poll. The system will then check if the deadline is in the future and will deny dates that are in the past. Finally the actor has some options e.g. if the players are able to see intermediate results, if the players can see the final results and notification type. The system will then store the poll in the \textit{Connected.Football} environment and send the notifications to the players. 
 
 \begin{figure}[H]
     \begin{center}
@@ -57,8 +58,7 @@ The \textit{Connected.Football} platform than checks for every entered email add
 
 \subsubsection{Voting on an Exercise Poll}
 \label{sssec:voting_on_exercise_poll}
-
-TODO Lucas Describe Activity Diagram Vote on Poll
+The following activity diagram (Figure 10) shows how the process of voting on a poll works. First the actor opens an exercise poll in the \textit{Connected.Football} application where the system will list all exercises that can be voted for. The next step for the actor then is to select an exercise that he wants to vote for. After the actor selected an exercise the system shows a confirmation dialog to confirm that the actor wants the particular exercise. If he changed his mind and wants to vote for another exercise he can deny the confirmation dialog. When the actor selects confirm the system will store the vote in the \textit{Connected.Football} environment. 
 
 \begin{figure}[H]
     \begin{center}
@@ -70,8 +70,7 @@ TODO Lucas Describe Activity Diagram Vote on Poll
 
 \subsubsection{Entering a Promotion Code}
 \label{sssec:entering_promotion_code}
-
-TODO Lucas Describe Activity Diagram Enter Promotion Code
+The activity diagram "Enter Promotion Code" shows the process of entering a promotion code to activate a trial period for a feature. To start this process the actor has to navigate to his or her account settings. In the account settings the actor will see an item labelled "Enter Promotion Code". This item has to be selected and the actor is prompted to enter a promotion code. After the actor entered a promotion code the system will check if the code was correct. If the code was incorrect the system will show a negative confirmation and the actor will redirected to enter the promotion code again. When the code was correct then the system will show a positive confirmation and it will start the trial period for the actor.
 
 \begin{figure}[H]
     \begin{center}
