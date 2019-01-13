@@ -7,7 +7,46 @@ TODO Marco
 \subsection{Quality Management}
 \label{ssec:quality_management}
 
-TODO Marco
+This subsection documents the necessary information required to effectively manage project quality from project planning to delivery. It defines a project’s quality roles, responsibilities, tools, procedures and authorities.
+
+\subsubsection{Plan Quality Management}
+\label{ssec:plan_quality}
+
+To ensure a sufficient quality level, every member of the team is involved in the quality process sharing responsibilities. The product owner is involved by providing the test framework.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|l|}
+        \hline
+        \cellcolor{gray}Name & 
+        \cellcolor{gray}Role &
+        \cellcolor{gray}Responsibilities \\ \hline
+        Guido Budziak & Product owner & - Quality mentoring and coaching.\\ \hline
+        Lucas Gehlen&Team member&- Taking part in code reviews.\\
+        Marco Kull&&- Quality audits.\\
+        Patrick Richter&&- Doing manual GUI testing.\\
+        Sebastian Wilczek && \\ \hline
+    \end{tabular}
+    \caption{Quality Roles \& Responsibilities}
+    \label{tab:quality_roles}
+\end{table}
+
+\subsubsection{Perform Quality Assurance}
+
+How the quality test will be performed depends on the type of the module being tested.\\
+Design fragments and frontend modules are reviewed and, in case of front end modules, manually tested. They are then presented and discussed by the whole team and the product owner at the weekly meetings.\\
+
+\subsubsection{Control Quality}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{images/state-quality.png}
+        \caption{Quality Process}
+        \label{fig:quality_process}
+    \end{center}
+\end{figure}
+
+To ensure complete quality testing on the software every completed part will be assigned to a quality testing state. A team member that has not been part of the creation of the relevant piece then performs the quality testing.
 
 \subsection{Requirements Quality Check}
 \label{ssec:requirements_quality_check}
@@ -19,7 +58,7 @@ TODO Marco
 
 TODO Marco
 
-\subsection{Testing React Native}
+\subsection{Testing \textit{React Native}}
 \label{ssec:testing_react_native}
 
 TODO Sebastian

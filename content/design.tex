@@ -83,12 +83,202 @@ The activity diagram "Enter Promotion Code" shows the process of entering a prom
 \subsection{Visual Design}
 \label{ssec:visual_design}
 
-TODO Lucas, TODO Marco
+TODO Lucas Hab jetzt einfach meine tools erwähnt und mockups eingefügt, kannst Deine ja einfach hinzufügen. Fällt Dir sonst noch was ein? - Marco
+
+For expressing our ideas of the visual design of the features to be implemented mock-ups are used. In order to create them different tools like \textit{Umlet}, \textit{Gimp}, \textit{Pencil}, ... were utilised.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{images/mockups/create.png}
+        \caption{Mockup Create Dialog}
+        \label{fig:mockup_create}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{images/mockups/main-active.png}
+        \caption{Mockup Main Overview}
+        \label{fig:mockup_main}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{images/mockups/poll.png}
+        \caption{Mockup Poll Dialog}
+        \label{fig:mockup_poll}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{images/mockups/create.png}
+        \caption{Mockup Select Exercise Dialog}
+        \label{fig:mockup_select}
+    \end{center}
+\end{figure}
 
 \subsection{\textit{Vote4Fun} Object Definition}
 \label{ssec:vote4fun_object_definition}
 
-TODO Marco
+To be able to handle a poll data must be stored, but access to the code was only given to the frontend. Together with the customer we discussed the data we would need and came up with the following representation in \textit{JSON}:
+
+\begin{lstlisting}[language=json,caption=\textit{Vote4Fun \textit{JSON} Object },label=lst:vote4fun_json]
+{
+    id: {
+      type: SimpleSchema.RegEx.Id,
+      optional: true
+    },
+    title: {
+      type: String,
+      min: 1,
+      max: 50
+    },
+    description: {
+      type: String,
+      max: 10000,
+      optional: true
+    },
+    trainingTarget: {
+      type: String,
+      max: 200,
+      optional: true
+    },
+    exercises: {
+      type: Array
+    },
+    'exercises.$': {
+      type: Object,
+      optional: true
+    },
+    'exercises.$.referenceId': {
+      type: String,
+      optional: SimpleSchema.RegEx.Id
+    },
+    'exercises.$.duration': {
+      type: Number,
+      min: 0,
+      max: 30
+    },
+    'exercises.$.comment': {
+      type: String,
+      optional: true,
+      max: 1000
+    },
+    'exercises.$.trainingPhase': {
+      type: String,
+      optional: true,
+      max: 50
+    },
+    fieldSize: {
+      type: Number,
+      allowedValues: [125, 250, 500, 750, 1000]
+    },
+    nrOfPlayers: {
+      type: Number,
+      optional: true,
+      min: 0,
+      max: 20
+    },
+    trainingDate: {
+      type: String,
+      optional: true,
+      // https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
+      regEx: /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/
+    },
+    teamSharing: {
+      type: Object,
+      optional: true,
+    },
+    'teamSharing.teamId': {
+      type: String,
+      regEx: SimpleSchema.RegEx.id,
+    },
+    'teamSharing.coach': {
+      type: Boolean,
+      defaultValue: false,
+    },
+    'teamSharing.coordinator': {
+      type: Boolean,
+      defaultValue: false,
+    },
+    'teamSharing.player': {
+      type: Boolean,
+      defaultValue: false,
+    },
+    'teamSharing.vote4fun': {
+      type: Boolean,
+      defaultValue: false,
+    },
+    vote4fun: {
+      type: Object,
+      optional: true,
+    },
+    'vote4fun.type': {
+      type: String,
+      allowedValues: ['clubteam', 'open'],
+    },
+    'vote4fun.title': {
+      type: String,
+      min: 3,
+      max: 40,
+    },
+    'vote4fun.exercises': {
+      type: Array,
+      minCount: 2,
+      maxCount: 4,
+    },
+    'vote4fun.exercises.$': {
+      type: Object,
+    },
+    'vote4fun.exercises.$.exerciseId': {
+      type: String,
+      regEx: SimpleSchema.RegEx.Id,
+    },
+    'vote4fun.exercises.$.playerIds': {
+      type: Array,
+    },
+    'vote4fun.exercises.$.playerIds.$': {
+      type: String,
+      regEx: SimpleSchema.RegEx.Id,
+    },
+    'vote4fun.deadline': {
+      type: String,
+      // https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
+      regEx: /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/,
+    },
+    'vote4fun.guestIDs': {
+      type: Array,
+      optional: true
+    },
+    'vote4fun.guestIDs.$': {
+      type: String,
+      regEx: SimpleSchema.RegEx.Id,
+    },
+    'vote4fun.showIntermediaResults': {
+      type: Boolean,
+      defaultValue: false,
+    },
+    'vote4fun.showFinalResults': {
+      type: Boolean,
+      defaultValue: false,
+    },
+    'vote4fun.notificationHoursBeforeDeadline': {
+      type: Number,
+      defaultValue: 1,
+      min: 1,
+      max: 24,
+    },
+    'vote4fun.notificationAfterPercentageVoted': {
+      type: Number,
+      min: 0,
+      max: 100,
+    }
+}
+\end{lstlisting}
+
+The data endpoint was provided by the customer. The idea, besides the self-explaining preference values, is that for every selectable exercise there is an array with user ids. When a user votes for an exercise her or his user id will be saved in that specific array. This way it is always possible to know which user voted for which exercise - and is also open for features like removing a already placed vote.
 
 \subsection{Component Structure}
 \label{ssec:component_structure}

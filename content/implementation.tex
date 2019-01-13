@@ -171,7 +171,128 @@ const isDoubleEmail = (value, array) => {
 \subsubsection{Choice of Exercises}
 \label{sssec:poll_exercises}
 
-TODO Marco
+The \textit{WizardStageExercises} component is used to select the exercises voted upon. To achieve this three arrays are utilised:
+
+\begin{itemize}
+    \item \textit{allExercises}\\
+    Contains all exercises. This array is filled by a \textit{GraphQL} query shown in listing \ref{lst:selectAll}.
+    \item \textit{selectedExercises}\\
+    Contains the exercises that are already selected for the training by the coach. This array is passed down to the wizard by the parent component.
+    \item \textit{pollExercises}\\
+    Contains the exercises that players will be able to vote upon. This array is created by the wizard.
+\end{itemize}
+
+As you can see in the query to get all the exercises in listing \ref{lst:selectAll} an exercise object consists of different fields containing for example the id, a title and a uri to an image.
+
+\begin{lstlisting}[language=javascript, caption=\textit{GraphQL} Query AllExercises, label=lst:selectAll]
+const EXERCISE_QUERY = gql`
+  query PublicExercises {
+    getAllExercises(trainingType: "team") {
+      id
+      title
+      taxonomy
+      image
+      animation
+      gif
+    }
+  }
+`;
+\end{lstlisting}
+
+The main goal of this component is to fill the \textit{pollExercises} array with the exercises the coach selects. It has to be ensured that every exercise is selected only once and that it is not already part of the regular training. In listing \ref{lst:selectContains} a method to check whether a exercise is already part of an array is shown.
+\begin{lstlisting}[language=javascript, caption=Check Include Method, label=lst:selectContains]
+const includesExercise = (array, item) => {
+  // return value
+  let ret = false;
+
+  // go through the list and check if a entry with the items id is contained
+  array.forEach(function (entry) {
+    if (item.id == entry.id) {
+      ret = true;
+    }
+  });
+
+  return ret;
+}
+\end{lstlisting}
+
+This method is then used for defining if an exercise should be displayed for selection to the coach when choosing the poll exercises as shown in listing \ref{lst:selectDisplay}.
+\begin{lstlisting}[language=javascript, caption=Display Exercise Method, label=lst:selectDisplay]
+const isDisplay = (item, pollExercises, selectedExercises) => {
+  // return value
+  let ret = false;
+
+  // check if item is already part of the training
+  ret = includesExercise(selectedExercises, item);
+
+  // if not, check if item is already selected to be voted on
+  if (!ret) {
+    ret = includesExercise(pollExercises, item);
+  }
+
+  return !ret;
+}
+\end{lstlisting}
+All of the above is then utilised to display the selectable exercises in a flat list as shown in listing \ref{lst:selectListPick}:
+\begin{lstlisting}[language=javascript, caption=Flatlist Selectable, label=lst:selectListPick]
+        <FlatList
+          data={this.props.allExercises}
+          extraData={this.props.updateView}
+          keyExtractor={keyExtractor}
+          renderItem={({ item }) => (
+            <View>
+              {isDisplay(item, this.props.pollExercises, this.props.selectedExercises) &&
+                <View style={{ flexDirection: 'row', height: 50 }}>
+                  <Button
+                    onPress={() => {
+                      this.props.pollExercises.push(item)
+                      this.props.refresh()
+                    }}
+                    title="+"
+                    backgroundColor="#C9C9C9"
+                  />
+                  <FastImage
+                    style={{ width: 50, height: 50 }}
+                    source={{ uri: item.image }}
+                    resizeMode={FastImage.resizeMode.contain}
+                  />
+                  <Text>{item.title}</Text>
+                </View>
+              }
+            </View>
+          )}
+        />
+\end{lstlisting}
+
+Similar to this the selected exercises contained in \textit{pollExercises} are also displayed in a \textit{Flatlist} alongside buttons to remove the specifice exercise from the list:
+\begin{lstlisting}[language=javascript, caption=Flatlist Selected, label=lst:selectListSelected]
+        <FlatList
+          data={this.props.pollExercises}
+          extraData={this.props.updateView}
+          keyExtractor={keyExtractor}
+          renderItem={({ item }) => (
+            <View>
+              <View style={{ flexDirection: 'row', height: 50 }}>
+                <Button
+                  onPress={() => {
+                    this.props.pollExercises.splice(this.props.pollExercises.indexOf(item), 1)
+                    this.props.refresh()
+                  }}
+                  title="-"
+                  backgroundColor="#C9C9C9"
+                />
+                <FastImage
+                  style={{ width: 50, height: 50 }}
+                  source={{ uri: item.image }}
+                  resizeMode={FastImage.resizeMode.contain}
+                />
+                <Text>{item.title}</Text>
+              </View>
+            </View>
+          )}
+        />
+\end{lstlisting}
+One may wonder what the \textit{extraData} field in the \textit{Flatlist} is about. It turns out that on a data change a re-rendering of the component is not automatically done, but changing the provided \textit{extraData} triggers a re-rendering of the component. That also explains why \lstinline{this.props.refresh()} needs to be called after every change in the underlying data.
 
 \subsubsection{Due Date Settings}
 \label{sssec:poll_due_date}
@@ -224,8 +345,6 @@ As far as state is concerned, the component acts the same way as \textit{WizardS
 
 \subsubsection{Check of Settings}
 \label{sssec:poll_check}
-
-TODO Marco Check and proof-read section, add information as you see fit 
 
 Listing \ref{lst:pollCheckComponent} shows a simplified version of the \textit{WizardStageCheck} component. Again a functional component, the component seems to include quite a lot, yet it is actually only responsible for showing the already entered values to the user. The amount of source code simply comes from the amount of information that needs to be displayed, which includes information from all previous \textit{WizardStage} components.
 
@@ -301,7 +420,7 @@ export default compose(
 )(WizardProcess)
 \end{lstlisting}
 
-This method builds a JSON object that consists of all the information entered by the user as well as some default values that can be changed by the owner of the poll later, such as whether to show intermediate results or when to send notifications to users. One thing to pay attention to is how the "exercises" array is constructed. The array does not only consist of the IDs of exercises, like the "pollExercises" array that was constructed by the \textit{WizardStageExercises} component (see \textit{\ref{sssec:poll_exercises} \nameref{sssec:poll_exercises}}), but of objects containing both one the mentioned IDs as well as an empty array called "playerIds". This empty array is later filled with the ID of an user, whenever this user votes for this specific exercise in the poll. This way it can be tracked who already voted and which exercises got how many views.
+This method builds a JSON object that consists of all the information entered by the user as well as some default values that can be changed by the owner of the poll later, such as whether to show intermediate results or when to send notifications to users. One thing to pay attention to is how the "exercises" array is constructed. The array does not only consist of the IDs of exercises but is build of objects containing both one the mentioned IDs as well as an empty array called "playerIds". This empty array is later filled with the ID of an user, whenever this user votes for this specific exercise in the poll. This way it can be tracked who already voted and which exercises got how many views.
 \newline
 The constructed JSON object is then propagated to the "action" property. This property is handed down from the component creating the training planner, which includes the storing of said object as well as the \textit{GraphQL} mutation to store the poll together with the entire training plan. A simplified version of this functionality can be seen in Listing \ref{lst:trainingPlannerGraphQL}.
 

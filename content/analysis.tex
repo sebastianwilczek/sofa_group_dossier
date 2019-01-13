@@ -2,22 +2,51 @@
 \label{sec:analysis}
 \lhead{\thesection \space Analysis}
 
-TODO Marco
-
-\subsection{Epics}
-\label{ssec:epics}
-
-TODO Marco
+This chapter describes how the project's requirements and the customer's expectations are broken down in specific activities to reflect the behaviour of the software.
+First all use cases are collected. Then the use cases are assigned to specific epics - a logical collection of use cases. Afterwards the resulting Software Requirement Specification for the first epic is presented. Finally a brief overview of the application architecture is given.
 
 \subsubsection{Use Case Diagram}
 \label{sssec:use_case_diagram}
 
-TODO Marco
+The Use Case Diagram allows a quick overview of the main features the application has. It describes the activities that should be accessible to the different stakeholders.\\
 
-\subsubsection{Epic 1 - TODO Add Name}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{images/ucd.png}
+        \caption{Use Case Diagram}
+        \label{fig:ucd}
+    \end{center}
+\end{figure}
+
+\subsection{Epics}
+\label{ssec:epics}
+
+To break down the development every use cases is assigned to a specific epic. An epic contains of use cases that have similar dependencies or depend on one another.
+
+\subsubsection{Epic 1 - Vote4Fun}
 \label{sssec:epic1}
 
-TODO Marco
+The first epic includes the use cases needed to have a voting system for already registered users. They are allowed to vote on an exercise based on team membership and the coaches invitations of users by e-mail address.
+
+The use cases relevant to the first epic are the following:
+
+\begin{itemize}
+    \item UC – 1.1 
+    \newline
+    Create new exercise poll.
+    \item UC – 1.2 
+    \newline
+    Cancel exercise poll.
+    \item UC – 1.3 
+    \newline
+    Vote on exercise poll.
+    \item UC – 1.4 
+    \newline
+    Show final result of exercise poll.
+    \item UC – 1.5 
+    \newline
+    Show intermediate result of exercise poll.
+\end{itemize}
 
 \subsubsection{Epic 2 - Promotion Code}
 \label{sssec:epic2}
@@ -72,7 +101,15 @@ TODO Patrick
 \subsection{Application Architecture}
 \label{ssec:application_architecture}
 
-TODO Marco
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth/2]{images/overview.png}
+        \caption{Architecture Overview}
+        \label{fig:architecture_overview}
+    \end{center}
+\end{figure}
+
+The applications' frontend is based on \textit{React Native}, it uses \textit{GraphQL} to communicate with a node server saving its data in a \textit{MongoDB} database.
 
 \subsection{Software Requirements Specification}
 \label{ssec:software_requirements_specification}
