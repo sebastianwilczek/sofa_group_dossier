@@ -27,7 +27,7 @@ In both cases, the poll has a set of users. Once the owner enters information re
     \end{center}
 \end{figure}
 
-Figure 8 shows the activity diagram that describes the process of creating a new exercise poll. 
+Figure \ref{fig:activity_diagram_create_poll} shows the activity diagram that describes the process of creating a new exercise poll. 
 \newline
 The process starts when the actor selects "\textit{Create New Exercise Poll}" while creating or editing a training. After that the application will guide the actor through the process of creating a new poll. First the actor enters a title for the poll. Then the system lists all available exercises from the \textit{Connected.Football} environment and the actor can select up to 4 but at least 2 exercises that the player later on can vote for. After selecting the exercises the actor is prompted to enter a deadline for the poll. The system will then check if the deadline is in the future and will deny dates that are in the past. Finally the actor has some options e.g. if the players are able to see intermediate results, if the players can see the final results and notification type. The system will then store the poll in the \textit{Connected.Football} environment and send the notifications to the players. 
 
@@ -58,7 +58,7 @@ The \textit{Connected.Football} platform than checks for every entered email add
 
 \subsubsection{Voting on an Exercise Poll}
 \label{sssec:voting_on_exercise_poll}
-The following activity diagram (Figure 10) shows how the process of voting on a poll works. First the actor opens an exercise poll in the \textit{Connected.Football} application where the system will list all exercises that can be voted for. The next step for the actor then is to select an exercise that he wants to vote for. After the actor selected an exercise the system shows a confirmation dialog to confirm that the actor wants the particular exercise. If he changed his mind and wants to vote for another exercise he can deny the confirmation dialog. When the actor selects confirm the system will store the vote in the \textit{Connected.Football} environment. 
+The following activity diagram (Figure \ref{fig:activity_diagram_vote_on_poll}) shows how the process of voting on a poll works. First the actor opens an exercise poll in the \textit{Connected.Football} application where the system will list all exercises that can be voted for. The next step for the actor then is to select an exercise that he wants to vote for. After the actor selected an exercise the system shows a confirmation dialog to confirm that the actor wants the particular exercise. If he changed his mind and wants to vote for another exercise he can deny the confirmation dialog. When the actor selects confirm the system will store the vote in the \textit{Connected.Football} environment. 
 
 \begin{figure}[H]
     \begin{center}
@@ -86,7 +86,8 @@ The activity diagram "Enter Promotion Code" shows the process of entering a prom
 TODO Marco TODO Lucas Hab jetzt einfach meine tools erwähnt und mockups eingefügt, kannst Deine ja einfach hinzufügen. Fällt Dir sonst noch was ein? - Marco (Anmerkung Sebastian: Normalerweise referenziert man Mockups im Text und erklärt (minimal) die Hintergedanken des Designs, muss nicht viel sein, wäre aber gut)
 
 For expressing our ideas of the visual design of the features to be implemented mock-ups are used. In order to create them different tools like \textit{Umlet}, \textit{Gimp}, \textit{Pencil}, ... were utilised.
-
+\newline
+Figure \ref{fig:mockup_main} shows the mockup for creating a new poll. To create a new poll a title, a deadline, a team and exercises have to entered. It is also possible to make the results available during the poll via a selected check box. The coach can also set a flag that the players will be notified if the poll is close to finish.  
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.4\textwidth]{images/mockups/create.png}
@@ -95,6 +96,7 @@ For expressing our ideas of the visual design of the features to be implemented 
     \end{center}
 \end{figure}
 
+The mockup in Figure \ref{fig:mockup_main} shows the overview of the polls. This overview shows the coach which polls for his are currently running or have finished. He is also able to delete a poll. 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.4\textwidth]{images/mockups/main-active.png}
@@ -103,6 +105,7 @@ For expressing our ideas of the visual design of the features to be implemented 
     \end{center}
 \end{figure}
 
+In Figure \ref{fig:mockup_poll} the mockup shows the overview over a poll. This overview shows how many players voted and how many players vote for each exercise. 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.4\textwidth]{images/mockups/poll.png}
@@ -111,9 +114,10 @@ For expressing our ideas of the visual design of the features to be implemented 
     \end{center}
 \end{figure}
 
+Figure \ref{fig:mockup_select} shows how the coach can selctet the exercise for the poll. The coach is able to select up to 4 and at least 2 exercises. 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.4\textwidth]{images/mockups/create.png}
+        \includegraphics[width=0.4\textwidth]{images/mockups/select-exercises.png}
         \caption{Mockup Select Exercise Dialog}
         \label{fig:mockup_select}
     \end{center}

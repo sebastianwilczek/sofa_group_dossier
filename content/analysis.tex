@@ -5,8 +5,8 @@
 This chapter describes how the project's requirements and the customer's expectations are broken down in specific activities to reflect the behaviour of the software.
 First all use cases are collected. Then the use cases are assigned to specific epics - a logical collection of use cases. Afterwards the resulting Software Requirement Specification for the first epic is presented. Finally a brief overview of the application architecture is given.
 
-\subsubsection{Use Case Diagram}
-\label{sssec:use_case_diagram}
+\subsection{Use Case Diagram}
+\label{ssec:use_case_diagram}
 
 The Use Case Diagram allows a quick overview of the main features the application has. It describes the activities that should be accessible to the different stakeholders.
 
@@ -27,7 +27,7 @@ To break down the development every use cases is assigned to a specific epic. An
 \label{sssec:epic1}
 
 The first epic includes the use cases needed to have a voting system for already registered users. They are allowed to vote on an exercise based on team membership and the coaches invitations of users by e-mail address.
-
+\newline
 The use cases relevant to the first epic are the following:
 
 \begin{itemize}
@@ -50,19 +50,22 @@ The use cases relevant to the first epic are the following:
 
 \subsubsection{Epic 2 - Promotion Code}
 \label{sssec:epic2}
+
 In addition to Epic 1, a coach user should be able to use a trial promotion code if he / she doesn't have the regular "\textit{VOTE4FUN}" feature to manage and start a \textit{Vote4Fun} poll for his / her team. 
 \newline
 This trial includes (a combination of):
+
 \begin{itemize}
     \item A trial period in days
     \item A  maximum number of  voting polls to be created and managed
 \end{itemize}
+
 The period and number of polls for each trial code should be flexible. 
 \newline
 The trial code can be received via email with a \textit{promotion link, promotion code (string of characters)} or as a \textit{notification} on his /  her phone. 
 \newline
-\newline
 The following requirements were given for this epic:
+
 \begin{itemize}
     \item UR – 2.1 
     \newline
@@ -114,4 +117,4 @@ The applications' frontend is based on \textit{React Native}, it uses \textit{Gr
 \subsection{Software Requirements Specification}
 \label{ssec:software_requirements_specification}
 
-TODO Marco
+As a part of the analysis phase a Software Requirements Specification document was created. It can be found in \textit{Appendix \ref{appendix:srs}: \nameref{appendix:srs}}.

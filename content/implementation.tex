@@ -99,7 +99,33 @@ Other than that, the component makes use of the \textit{FormTextInput}, which is
 \subsubsection{Team Selection}
 \label{sssec:poll_team}
 
-TODO Patrick
+Teampicker was invented for the the user with the role coach so that he is able to pick a team that is able to vote for exercises. Class TeamPicker extends a Component and has the method "onValueChange", this means if a value changes react triggers the render method. There is a case if the coach only has one team, the component would not trigger the render and the TeamPicker settings would not write into the TeamGraphql object. This object will at the end display all selected settings the user with the role coach made over the setup. It maps over the object 
+
+\begin{lstlisting}
+import React, { Component } from 'react';
+import { View, Picker} from 'react-native';
+class TeamPicker extends Component {
+  render() {
+    return (
+      <View style = {{marginTop: '50%', marginLeft: '25%',
+      marginRight: '25%', width: '50%'}}>
+        <Picker selectedValue = {this.props.team}
+         onValueChange = {this.props.updateTeam}>
+          { this.props.query.map(
+              element => (
+              <Picker.Item styles = {{textAlign: 'center'}}
+                key={element.teamInfo.teamId}
+                label={element.teamInfo.teamName}
+                value={element.teamInfo.teamId}
+            />),
+          )}
+        </Picker>
+      </View>
+    );
+  }
+}
+export default TeamPicker;
+\end{lstlisting}
 
 \subsubsection{Addition of Guests}
 \label{sssec:poll_guests}
@@ -166,6 +192,48 @@ const isDoubleEmail = (value, array) => {
   })
   return doubleEmail
 }
+\end{lstlisting}
+
+In Listing \ref{lst:pollGuestGraphQLCheck} the client is shown that executes the \textit{GraphQL}. There also is the \textit{onPress} method that is executed as soon as the user presses the add button in the \textit{GuestStage}. The \textit{onPress} method then first checks if the email is valid and if it was already added to the \textit{emailArray}. If all the checks return true, the \textit{executeQuery} method is executed. 
+\newline
+The \textit{executeQuery} method is a Asynchronous method that executes a \textit{GraphQL} query with the help of Apollo. Therefore it needs a \textit{GraphQL} query that is saved in the variable \textit{EMAIL\_QUERY} and the email as a parameter that will be added to the \textit{EMAIL\_QUERY}. After the query was execute the result can be fetched with the \textit{then} method. In this method the result is then checked if the query returned null. If the query returned null then a notification will be shown for the user to inform him that the email is not registered in the \textit{Connected.Football} environment. When the query returned something else then null then the email is added to the \textit{FlatList} and to the \textit{emailArray}.
+\begin{lstlisting}[language=javascript, caption=Check in Connected.Football environment, label=lst:pollGuestGraphQLCheck]
+client => {
+        const executeQuery = async () => {
+          await client
+            .query({
+              query: EMAIL_QUERY,
+              variables: {
+                email: props.email
+              },
+              fetchPolicy: 'network-only'
+            })
+            .then(response => { 
+              //console.warn(response)
+              if (response.data.checkUserPresenceWithinClubByEmail !== null) {
+                const bufArray = props.emailArray
+                bufArray.push({ email: props.email })
+                props.emailArray = [...props.emailArray, ...bufArray]
+                props.refresh()
+              } else {
+                HelpNotification('emailNotInConnectedFootball')
+              }
+            })
+            .catch(err => {
+              console.warn(err)
+            })
+        }
+        const onPress = () => {
+          if (validateEmail(props.email)) {
+            if (!isDoubleEmail(props.email, props.emailArray)) {
+              executeQuery()
+            } else {
+              HelpNotification('emailDouble')
+            }
+          } else {
+            HelpNotification('emailNotValid')
+          }
+        }
 \end{lstlisting}
 
 \subsubsection{Choice of Exercises}
@@ -520,20 +588,25 @@ The great thing about defining handler methods this way is that they can be used
 \newline
 Considering limiting re-rendering, \textit{recompose} can also be of use that way. The "onlyUpdateForKeys" keyword allows it to define the names of certain state values. When a state value changes that is not part of this set, the rendering will not take place for the component. For example, this can be very useful when the changed state is only needed for internal computation and is not visible to the user. This significantly reduces overhead by stopping unnecessary re-rendering.
 
-\subsection{GraphQL}
+\subsection{\textit{GraphQL}}
 \label{ssec:graphql}
 
-TODO Lucas, TODO Patrick
+TODO Lucas(funktion in der App)
+
+\textit{GraphQL} is used as a framework for REST that is developed by Facebook in 2012 and released to the public in 2015. \textit{GraphQL} allows users to define the structure of the required data, to retrieve the exact data the user asks for. \textit{GraphQl} provides only one endpoint and lets user change data through so called mutations. To query for data, the keyword query is used. With the help of this framework increasing programs do not get messy when it comes to REST API calls. \textit{GraphQL} can not only be used for \textit{JavaScript}, there are server libraries for nearly every programming language out there.
+
 
 \subsection{Problems \& Caveats}
 \label{ssec:problems}
 
-TODO Patrick
+Throughout the project the group encountered various problems with \textit{React Native}. The main concern hereby is that the technology is brand new and many problems are not tackled in the web, as for now, \textit{React Native} is in version 0.57. Speeding up with the development was not possible since all the frameworks and the language \textit{JavaScript} had first to be learned and understood, including randomly encountered errors. This worked like a neck breaker in terms of finishing epics. Sometimes over the weekend the project did not work after getting back to it on Mondays and nobody knew why, even after a complete fresh new checkout plus clean and build from the master branch.
 
 \subsubsection{Debugging}
 \label{sssec:debugging}
 
-TODO Patrick
+ The normal procedure is that if an error is encountered, at the end, searching for it online often returns a fitting answer. However, not with \textit{React Native}, encountering problems and trying to search for related issues did not rarely end in hours of searching and ending up on Chinese web sites with no readable answer to the solutions. The error message was often somewhat cryptic and not meaningful at all, for example the message "Undefined is not a function". The group learned over time, that it is smarter to make tiny steps and change little by little and to directly compile and deploy the application afterwards. "Hotreloading" in this case caused many problems, sometimes it was not clear why the application is not working, "Hotreloading" is one of the newer features that immediately refreshes the code on the phone after the code has been saved. However, the problem with that is, that it does not recognise all changes and the developer has to recompile the entire app. Without knowing this, hours can be spent by trying to find an error that does not exist.
+ \newline
+ Debugging was quiet difficult with these problems, the best hint was to look up the Github repository and look for fresh created threads about the issue that appeared while developing. If no related thread to the error could be found, it was often not possible to keep on developing with this problem.
 
 \subsubsection{Package Management}
 \label{sssec:package_management}
@@ -547,4 +620,6 @@ Very late in the project this problem then would be solved. The problem was that
 \subsubsection{Configuration Problems}
 \label{sssec:configuration_problems}
 
-TODO Patrick
+The idea behind \textit{React Native} is quiet handy and fastens prototype development. Fine tuning can later be done with native developers. The problem to that is that the technology has not matured enough, so setting up the project on \textit{iOS} was way harder than setting it up and working with it on \textit{Android}.
+\newline
+To be able to let the code run on an \textit{iOS} device, a Mac and Xcode is needed. The group member Patrick Richter spent nearly 30 hours trying to debug issues and getting it up and running on \textit{iOS}. Even with the help of the customer, \textit{iOS} was insufficient to work with. Plenty of times the app would not boot, respond with errors or do nothing at all. Since this is the first project where \textit{React Native} has been used, errors can also be related to bad coding style of the app.
