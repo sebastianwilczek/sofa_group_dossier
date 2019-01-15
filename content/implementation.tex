@@ -99,7 +99,7 @@ Other than that, the component makes use of the \textit{FormTextInput}, which is
 \subsubsection{Team Selection}
 \label{sssec:poll_team}
 
-Teampicker was invented for the the user with the role coach so that he is able to pick a team that is able to vote for exercises. Class TeamPicker extends a Component and has the method "onValueChange", this means if a value changes \textit{React Native} triggers the render method. There is a case if the coach only has one team, the component would not trigger the render and the TeamPicker settings would not write into the TeamGraphql object. This object will at the end display all selected settings the user with the role coach made over the setup. It maps over the object 
+\textit{TeamPicker} was invented for the the user with the role coach so that he is able to pick a team that is able to vote for exercises. Class \textit{TeamPicker} extends a Component and has the method "onValueChange", this means if a value changes \textit{React Native} triggers the render method. There is a case if the coach only has one team, the component would not trigger the render and the \textit{TeamPicker} settings would not write into the \textit{TeamGraphql} object. This object will at the end display all selected settings the user with the role coach made over the setup. It maps over the object 
 
 \begin{lstlisting}
 import React, { Component } from 'react';
@@ -197,6 +197,7 @@ const isDoubleEmail = (value, array) => {
 In Listing \ref{lst:pollGuestGraphQLCheck} the client is shown that executes the \textit{GraphQL}. There also is the \textit{onPress} method that is executed as soon as the user presses the add button in the \textit{GuestStage}. The \textit{onPress} method then first checks if the email is valid and if it was already added to the \textit{emailArray}. If all the checks return true, the \textit{executeQuery} method is executed. 
 \newline
 The \textit{executeQuery} method is a Asynchronous method that executes a \textit{GraphQL} query with the help of Apollo. Therefore it needs a \textit{GraphQL} query that is saved in the variable \textit{EMAIL\_QUERY} and the email as a parameter that will be added to the \textit{EMAIL\_QUERY}. After the query was execute the result can be fetched with the \textit{then} method. In this method the result is then checked if the query returned null. If the query returned null then a notification will be shown for the user to inform him that the email is not registered in the \textit{Connected.Football} environment. When the query returned something else then null then the email is added to the \textit{FlatList} and to the \textit{emailArray}.
+
 \begin{lstlisting}[language=javascript, caption=Check in \textit{Connected.Football} environment, label=lst:pollGuestGraphQLCheck]
 client => {
         const executeQuery = async () => {
@@ -268,6 +269,7 @@ const EXERCISE_QUERY = gql`
 \end{lstlisting}
 
 The main goal of this component is to fill the \textit{pollExercises} array with the exercises the coach selects. It has to be ensured that every exercise is selected only once and that it is not already part of the regular training. In listing \ref{lst:selectContains} a method to check whether a exercise is already part of an array is shown.
+
 \begin{lstlisting}[language=javascript, caption=Check Include Method, label=lst:selectContains]
 const includesExercise = (array, item) => {
   // return value
@@ -285,6 +287,7 @@ const includesExercise = (array, item) => {
 \end{lstlisting}
 
 This method is then used for defining if an exercise should be displayed for selection to the coach when choosing the poll exercises as shown in listing \ref{lst:selectDisplay}.
+
 \begin{lstlisting}[language=javascript, caption=Display Exercise Method, label=lst:selectDisplay]
 const isDisplay = (item, pollExercises, selectedExercises) => {
   // return value
@@ -301,8 +304,10 @@ const isDisplay = (item, pollExercises, selectedExercises) => {
   return !ret;
 }
 \end{lstlisting}
+
 All of the above is then utilised to display the selectable exercises in a flat list as shown in listing \ref{lst:selectListPick}:
-\begin{lstlisting}[language=javascript, caption=Flatlist Selectable, label=lst:selectListPick]
+
+\begin{lstlisting}[language=javascript, caption=\textit{FlatList} Selectable, label=lst:selectListPick]
         <FlatList
           data={this.props.allExercises}
           extraData={this.props.updateView}
@@ -332,8 +337,9 @@ All of the above is then utilised to display the selectable exercises in a flat 
         />
 \end{lstlisting}
 
-Similar to this the selected exercises contained in \textit{pollExercises} are also displayed in a \textit{Flatlist} alongside buttons to remove the specifice exercise from the list:
-\begin{lstlisting}[language=javascript, caption=Flatlist Selected, label=lst:selectListSelected]
+Similar to this the selected exercises contained in \textit{pollExercises} are also displayed in a \textit{FlatList} alongside buttons to remove the specified exercise from the list:
+
+\begin{lstlisting}[language=javascript, caption=\textit{FlatList} Selected, label=lst:selectListSelected]
         <FlatList
           data={this.props.pollExercises}
           extraData={this.props.updateView}
@@ -360,7 +366,8 @@ Similar to this the selected exercises contained in \textit{pollExercises} are a
           )}
         />
 \end{lstlisting}
-One may wonder what the \textit{extraData} field in the \textit{Flatlist} is about. It turns out that on a data change a re-rendering of the component is not automatically done, but changing the provided \textit{extraData} triggers a re-rendering of the component. That also explains why \lstinline{this.props.refresh()} needs to be called after every change in the underlying data.
+
+One may wonder what the "extraData" field in the \textit{FlatList} is about. It turns out that on a data change a re-rendering of the component is not automatically done, but changing the provided "extraData" triggers a re-rendering of the component. That also explains why "this.props.refresh()" needs to be called after every change in the underlying data.
 
 \subsubsection{Due Date Settings}
 \label{sssec:poll_due_date}
@@ -591,7 +598,7 @@ Considering limiting re-rendering, \textit{recompose} can also be of use that wa
 \subsection{\textit{GraphQL}}
 \label{ssec:graphql}
 
-\textit{GraphQL} is used as a framework for REST that is developed by Facebook in 2012 and released to the public in 2015. \textit{GraphQL} allows users to define the structure of the required data, to retrieve the exact data the user asks for. \textit{GraphQl} provides only one endpoint and lets user change data through so called mutations. To query for data, the keyword query is used. With the help of this framework increasing programs do not get messy when it comes to REST API calls. \textit{GraphQL} can not only be used for \textit{JavaScript}, there are server libraries for nearly every programming language out there.
+\textit{GraphQL} is used as a framework for REST that is developed by Facebook in 2012 and released to the public in 2015. \textit{GraphQL} allows users to define the structure of the required data, to retrieve the exact data the user asks for. \textit{GraphQL} provides only one endpoint and lets user change data through so called mutations. To query for data, the keyword query is used. With the help of this framework increasing programs do not get messy when it comes to REST API calls. \textit{GraphQL} can not only be used for \textit{JavaScript}, there are server libraries for nearly every programming language out there.
 \newline
 The \textit{Connected.Football} application uses \textit{GraphQL} for communication between the frontend and the backend. On the backend several \textit{GraphQL} functions are defined that the frontend uses to get data from the backend. As an example in section \ref{sssec:poll_guests} the entered email was send to the backend to check if it was already registered in the \textit{Connected.Football} environment. Therefore a \textit{GraphQL} query in the frontend was defined. This query then calls on a function on the backend that expects an email. If this query finds an email that is equal to the one that was given the function as a parameter then the function returns the id of the user. When the query doesn't find an email then it returns true. 
 
