@@ -31,7 +31,8 @@ Figure \ref{fig:activity_diagram_create_poll} shows the activity diagram that de
 \newline
 The process starts when the actor selects "\textit{Create New Exercise Poll}" while creating or editing a training. After that the application will guide the actor through the process of creating a new poll. First the actor enters a title for the poll. Then the system lists all available exercises from the \textit{Connected.Football} environment and the actor can select up to 4 but at least 2 exercises that the player later on can vote for. After selecting the exercises the actor is prompted to enter a deadline for the poll. The system will then check if the deadline is in the future and will deny dates that are in the past. Finally the actor has some options e.g. if the players are able to see intermediate results, if the players can see the final results and notification type. The system will then store the poll in the \textit{Connected.Football} environment and send the notifications to the players. 
 
-\begin{figure}[H]
+
+\begin{figure}[H] 
     \begin{center}
         \includegraphics[width=0.8\textwidth]{images/diagrams/activity_diagrams/ActivityDiagram_CreateExercisePoll.png}
         \caption{Activity Diagram Create Poll}
@@ -83,8 +84,6 @@ The activity diagram "Enter Promotion Code" shows the process of entering a prom
 \subsection{Visual Design}
 \label{ssec:visual_design}
 
-TODO Marco TODO Lucas Hab jetzt einfach meine tools erwähnt und mockups eingefügt, kannst Deine ja einfach hinzufügen. Fällt Dir sonst noch was ein? - Marco (Anmerkung Sebastian: Normalerweise referenziert man Mockups im Text und erklärt (minimal) die Hintergedanken des Designs, muss nicht viel sein, wäre aber gut)
-
 For expressing our ideas of the visual design of the features to be implemented mock-ups are used. In order to create them different tools like \textit{Umlet}, \textit{Gimp}, \textit{Pencil}, ... were utilised.
 \newline
 Figure \ref{fig:mockup_main} shows the mockup for creating a new poll. To create a new poll a title, a deadline, a team and exercises have to entered. It is also possible to make the results available during the poll via a selected check box. The coach can also set a flag that the players will be notified if the poll is close to finish.  
@@ -128,7 +127,7 @@ Figure \ref{fig:mockup_select} shows how the coach can selctet the exercise for 
 
 To be able to handle a poll data must be stored, but access to the code was only given to the frontend. Together with the customer we discussed the data we would need and came up with the following representation in \textit{JSON}:
 
-\begin{lstlisting}[language=json,caption=\textit{Vote4Fun \textit{JSON} Object },label=lst:vote4fun_json]
+\begin{lstlisting}[language=json,caption=\textit{Vote4Fun} JSON Object,label=lst:vote4fun_json]
 {
     id: {
       type: SimpleSchema.RegEx.Id,
@@ -188,7 +187,6 @@ To be able to handle a poll data must be stored, but access to the code was only
     trainingDate: {
       type: String,
       optional: true,
-      // https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
       regEx: /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/
     },
     teamSharing: {
@@ -249,7 +247,6 @@ To be able to handle a poll data must be stored, but access to the code was only
     },
     'vote4fun.deadline': {
       type: String,
-      // https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
       regEx: /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/,
     },
     'vote4fun.guestIDs': {

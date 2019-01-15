@@ -23,7 +23,7 @@ The Use Case Diagram allows a quick overview of the main features the applicatio
 
 To break down the development every use cases is assigned to a specific epic. An epic contains of use cases that have similar dependencies or depend on one another.
 
-\subsubsection{Epic 1 - Vote4Fun}
+\subsubsection{Epic 1 - \textit{Vote4Fun}}
 \label{sssec:epic1}
 
 The first epic includes the use cases needed to have a voting system for already registered users. They are allowed to vote on an exercise based on team membership and the coaches invitations of users by e-mail address.
@@ -51,7 +51,7 @@ The use cases relevant to the first epic are the following:
 \subsubsection{Epic 2 - Promotion Code}
 \label{sssec:epic2}
 
-In addition to Epic 1, a coach user should be able to use a trial promotion code if he / she doesn't have the regular "\textit{VOTE4FUN}" feature to manage and start a \textit{Vote4Fun} poll for his / her team. 
+In addition to Epic 1, a coach user should be able to use a trial promotion code if he / she doesn't have the regular \textit{Vote4Fun} feature to manage and start a \textit{Vote4Fun} poll for his / her team. 
 \newline
 This trial includes (a combination of):
 
@@ -69,7 +69,7 @@ The following requirements were given for this epic:
 \begin{itemize}
     \item UR – 2.1 
     \newline
-    A coach can open a view (position to be determined) to enter a trial code for managing Vote4Fun polls if and only if the user does not have the Vote4Fun permission.
+    A coach can open a view (position to be determined) to enter a trial code for managing \textit{Vote4Fun} polls if and only if the user does not have the \textit{Vote4Fun} permission.
     \item UR – 2.2
     \newline
     A coach can enter and submit a trial code.
@@ -84,22 +84,49 @@ The following requirements were given for this epic:
     A user receives a negative confirmation after entering an invalid trial code.
     \item UR – 2.6
     \newline
-    A user can create and manage Vote4Fun polls after entering a valid trial code.
+    A user can create and manage \textit{Vote4Fun} polls after entering a valid trial code.
     \item UR – 2.7 
     \newline
     A user can see the remaining trial period / number of polls to be managed.
     \item UR – 2.8
     \newline
-    A user with the app installed can click on an email promotion link to have the promotion code entered automatically.
+    A user with the application installed can click on an email promotion link to have the promotion code entered automatically.
     \item UR – 2.9 
     \newline
-    A user with the app installed can click on a notification to have the promotion code entered automatically.
+    A user with the application installed can click on a notification to have the promotion code entered automatically.
 \end{itemize}
 
-\subsubsection{Epic 3 - TODO Add Name}
+\subsubsection{Epic 3 - On-Boarding Poll}
 \label{sssec:epic3}
 
-TODO Patrick
+As an extension to Epic 1 and Epic 2, the user shall be able to create a voting poll on the fly with a number of users that the user selects. So instead of a coach, players and a program, there is an initiator, participants and multiple exercises.
+The users still needs to download the application as the voting takes place there. All users have to register and login, but they end up in the \textit{Vote4Fun} view instead of the regular view.
+\newline
+Therefore, all requirements UR 1.1 through UR 1.15 hold with the following adjustments:
+
+\begin{itemize}
+    \item UR – 3.1
+    \newline
+    An initiator can initiate a \textit{Vote4Fun} poll (if and only if logged in).
+    \item UR – 3.2
+    \newline
+    An initiator can select a set of users (minimum 4 maximum 30) for the voting poll from her / his contact list.
+    \item UR – 3.3
+    \newline
+    An initiator can select an age category ( from 7 to 19+ ).
+    \item UR – 3.4
+    \newline
+    An initiator can select a 2 to 4 exercises for the selected age category from a list.
+    \item UR – 3.5
+    \newline
+    A user receives an SMS or email with a link to participate in the voting poll.
+    \item UR – 3.6
+    \newline
+    A user, with the application installed, can click the link in an SMS or email to open the application.
+    \item UR – 3.7
+    \newline
+    A user, without the application installed, will be directed to the appropriated application store to download the application.
+\end{itemize}
 
 \subsection{Application Architecture}
 \label{ssec:application_architecture}
@@ -112,7 +139,7 @@ TODO Patrick
     \end{center}
 \end{figure}
 
-The applications' frontend is based on \textit{React Native}, it uses \textit{GraphQL} to communicate with a node server saving its data in a \textit{MongoDB} database.
+The applications' frontend is based on \textit{React Native}, it uses \textit{GraphQL} to communicate with a \textit{Node.js} server saving its data in a \textit{MongoDB} database.
 
 \subsection{Software Requirements Specification}
 \label{ssec:software_requirements_specification}
